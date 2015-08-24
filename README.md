@@ -43,6 +43,7 @@ Tested on:
 - `rsync_opts` - list of rsync options
 - `exclude` - list of [exclusions](https://github.com/axkibe/lsyncd/wiki/Lsyncd%202.1.x%20%E2%80%96%20Layer%204%20Config%20%E2%80%96%20Default%20Behavior#exclusions)
 - `exclude_from` - path to file containing exclusions
+- `delete` - By default Lsyncd will delete files on the target that are not present at the source. This flags let you define if you don't want to delete files, or when you want them to be deleted.
 
 #### Example
 

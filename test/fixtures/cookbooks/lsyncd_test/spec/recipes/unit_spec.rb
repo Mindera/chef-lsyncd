@@ -62,6 +62,21 @@ sync {
 '
   end
 
+  let(:test6_content) do
+      '-- Created by Chef; Using lsync 2.1 config sytax
+sync {
+    default.rsync,
+    source      = "/tmp/test6_source",
+    target      = "/tmp/test6_target",
+    rsync = {
+      _extra = {"--omit-dir-times"},
+    },
+    exclude     = {"foo", "bar"},
+    delete      = "false",
+}
+'
+  end
+
   it 'includes recipe lsyncd::default' do
     expect(chef_run).to include_recipe('lsyncd::default')
   end
@@ -139,6 +154,21 @@ sync {
 
     it 'notifies service[lsyncd] to restart delayed' do
       resource = chef_run.lsyncd_target('test5')
+      expect(resource).to notify('service[lsyncd]').to(:restart).delayed
+    end
+  end
+
+  context 'creating an lsync_target with rsync mode deleted attribute' do
+    it 'creates lsyncd_target[test6]' do
+      expect(chef_run).to create_lsyncd_target('test6')
+    end
+
+    it 'steps into lsyncd_target and creates template[/etc/lsyncd/conf.d/test6.lua]' do
+      expect(trusty_chef_run).to render_file('/etc/lsyncd/conf.d/test6.lua').with_content(test6_content)
+    end
+
+    it 'notifies service[lsyncd] to restart delayed' do
+      resource = chef_run.lsyncd_target('test6')
       expect(resource).to notify('service[lsyncd]').to(:restart).delayed
     end
   end

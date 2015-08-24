@@ -104,3 +104,34 @@ file '/tmp/test5_source/empty_file' do
   mode 0644
   action :create
 end
+
+lsyncd_target 'test6' do
+  mode 'rsync'
+  source '/tmp/test6_source'
+  target '/tmp/test6_target'
+  rsync_opts ["--omit-dir-times"]
+  exclude ["foo", "bar"]
+  delete false
+  notifies :restart, 'service[lsyncd]', :delayed
+end
+
+['/tmp/test6_source'].each do |dir|
+  directory dir do
+    owner 'root'
+    group 'root'
+    mode '0755'
+    action :create
+  end
+end
+
+file '/tmp/test6_source/empty_file' do
+  content 'so foo. much bar. wow.'
+  mode 0644
+  action :create
+end
+
+file '/tmp/test_exclude' do
+  content '*.tmp'
+  mode 0644
+  action :create
+end
